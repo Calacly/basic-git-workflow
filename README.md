@@ -2,8 +2,18 @@
 
 A polished SwiftUI iOS app template designed to be cloned as the starting point
 for new apps. It ships with a small design system, reusable components, fluid
-animations, haptics, light/dark support, and a sensible feature-folder
-structure.
+animations, haptics, light/dark support, a sensible feature-folder structure,
+and the production scaffolding most apps need (networking, dependency
+injection, error handling, logging, analytics seam, persistence, tests, CI, and
+a privacy manifest).
+
+## Build from a product brief
+
+This template is meant to be handed to **Claude Code**: clone it, open it on a
+Mac, fill in [`docs/PRODUCT_BRIEF.md`](docs/PRODUCT_BRIEF.md), then ask Claude to
+*"Build the app described in `docs/PRODUCT_BRIEF.md`."* See
+[`CLAUDE.md`](CLAUDE.md) for the architecture, conventions, and the
+step-by-step recipe Claude follows when adding features.
 
 ## Requirements
 
@@ -42,7 +52,15 @@ To make it your own:
 
 ```
 SwiftAppTemplate/
-├─ App/                 App entry, root view, shared environment state
+├─ App/                 App entry, root view, AppEnvironment (DI + app state)
+├─ Core/                Non-UI infrastructure
+│  ├─ Configuration/    AppConfiguration (environment, base URL, version)
+│  ├─ Networking/       APIClient protocol, Endpoint, Live + Mock clients
+│  ├─ Persistence/      FileStore (Codable cache)
+│  ├─ Analytics/        AnalyticsClient seam + Console/Noop impls
+│  ├─ Logging/          AppLog (os.Logger categories)
+│  ├─ Errors/           AppError + ErrorCenter + .errorAlert modifier
+│  └─ Services/         AppServices dependency container
 ├─ DesignSystem/        Theme tokens, color palette
 │  └─ Components/       Reusable views (buttons, cards, shimmer, pills, background)
 ├─ Navigation/          Custom tab bar + tab definitions
@@ -53,8 +71,23 @@ SwiftAppTemplate/
 │  ├─ Detail/
 │  └─ Settings/
 ├─ Support/             Helpers (haptics)
-└─ Resources/           Asset catalog (accent color, app icon slot)
+└─ Resources/           Asset catalog + app icon, PrivacyInfo, Localizable.xcstrings
+SwiftAppTemplateTests/  Unit tests (XCTest, @testable import)
 ```
+
+## Production scaffolding
+
+| Concern | Where |
+| --- | --- |
+| **Networking** | `Core/Networking` — depend on the `APIClient` protocol; `LiveAPIClient` for production, `MockAPIClient` for previews/tests. |
+| **Dependency injection** | `Core/Services/AppServices` built once and injected via `AppEnvironment`. |
+| **Errors** | Map to `AppError`, present with `ErrorCenter.present(_:)` + the global `.errorAlert`. |
+| **Logging** | `AppLog` categories over `os.Logger`. |
+| **Analytics** | Vendor-neutral `AnalyticsClient` seam (`ConsoleAnalytics` default). |
+| **Persistence** | `FileStore` Codable cache; `@AppStorage` for preferences. |
+| **Config** | `AppConfiguration` reads env / base URL / version from Info.plist. |
+| **App Store** | `PrivacyInfo.xcprivacy` manifest + `Localizable.xcstrings` String Catalog. |
+| **Tests & CI** | `SwiftAppTemplateTests` target + `.github/workflows/ci.yml` (build + test on macOS). |
 
 ## Conventions
 

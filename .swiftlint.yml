@@ -1,0 +1,40 @@
+# SwiftLint configuration. Optional — install with `brew install swiftlint`.
+# Runs in CI only if present; never blocks the Xcode build.
+
+included:
+  - SwiftAppTemplate
+  - SwiftAppTemplateTests
+
+excluded:
+  - "**/.build"
+  - "**/DerivedData"
+
+disabled_rules:
+  - trailing_whitespace
+  - todo
+
+opt_in_rules:
+  - empty_count
+  - closure_spacing
+  - contains_over_first_not_nil
+  - first_where
+  - sorted_first_last
+  - redundant_nil_coalescing
+  - unneeded_parentheses_in_closure_argument
+
+line_length:
+  warning: 120
+  error: 200
+  ignores_comments: true
+  ignores_urls: true
+
+identifier_name:
+  min_length: 2
+  excluded: [id, x, y, r, g, b, t, to]
+
+type_name:
+  max_length: 50
+
+function_body_length:
+  warning: 70
+  error: 120
