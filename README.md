@@ -65,6 +65,14 @@ SwiftAppTemplate/
 - **Surfaces** use system colors so the UI adapts to light and dark mode, while
   brand accents stay vivid in both.
 
+## Tooling
+
+The repo includes a project-scoped `.mcp.json` that registers
+[XcodeBuildMCP](https://github.com/cameroncooke/XcodeBuildMCP). When you open
+the project in Claude Code on a Mac, it offers an MCP server that can build,
+run, test, and drive simulators for this app via `npx`. It requires macOS and
+Node, and has no effect on other platforms.
+
 ## License
 
 See [LICENSE](LICENSE).
